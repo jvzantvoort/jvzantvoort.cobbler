@@ -1,0 +1,11 @@
+# - name: generate crypted password
+#   shell: openssl passwd -1 {{ cobbler_default_password }}
+#   register: cobbler_default_password_crypted
+# 
+- yedit:
+    src: /etc/cobbler/settings
+    key: "{{ item.key }}"
+    value: "{{ item.value }}"
+  with_items: "{{ cobbler_settings }}"
+
+# vim:ft=ansible:

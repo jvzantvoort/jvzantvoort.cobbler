@@ -1,0 +1,5 @@
+- block:
+  - name: Set SELinux policy
+    selinux:
+      state: disabled
+# vim:ft=ansible:

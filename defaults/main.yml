@@ -1,0 +1,13 @@
+---
+
+cobbler_settings:
+  - key: manage_dhcp
+    value: 0
+  - key: manage_dns
+    value: 0
+  - key: manage_tftpd
+    value: 1
+  - key: manage_rsync
+    value: 0
+  - key: server
+    value: 127.0.0.1

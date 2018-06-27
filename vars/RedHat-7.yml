@@ -1,0 +1,37 @@
+base_packages:
+  - libselinux-python
+
+cobbler_packages:
+  - cobbler-web
+  - cobbler
+  - dhcp
+  - pykickstart
+  - createrepo
+  - httpd
+  - mkisofs
+  - mod_wsgi
+  - mod_ssl
+  - python-cheetah
+  - python-netaddr
+  - python-simplejson
+  - python-urlgrabber
+  - PyYAML
+  - rsync
+  - syslinux
+  - tftp-server
+  - yum-utils
+  - xinetd
+
+cobbler_services:
+  - cobblerd
+
+cobbler_web_services:
+  - httpd
+
+cobbler_firewall_services:
+  - http
+  - https
+  - dhcp
+  - proxy-dhcp
+  - tftp
+

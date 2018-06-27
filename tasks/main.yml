@@ -1,0 +1,65 @@
+---
+- fail:
+    msg: "Only Red Hat (or variants thereof) is supported"
+  when: ansible_os_family != 'RedHat'
+
+# ---------------------------------------------------------------------------- #
+# VARIABLES                                                                    #
+# ---------------------------------------------------------------------------- #
+- name: resolve platform specific vars
+  include_vars: "{{item}}"
+  with_first_found:
+    - "{{ansible_distribution}}-{{ansible_distribution_release}}.yml"
+    - "{{ansible_distribution}}.yml"
+    - "{{ansible_os_family}}-{{ansible_distribution_major_version}}.yml"
+    - "{{ansible_os_family}}.yml"
+
+# ---------------------------------------------------------------------------- #
+# INSTALL SOFTWARE                                                             #
+# ---------------------------------------------------------------------------- #
+- name: Install Base Packages
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ base_packages }}"
+
+- name: Install Cobbler Packages
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ cobbler_packages }}"
+
+# ---------------------------------------------------------------------------- #
+# SETUP SELINUX                                                                #
+# ---------------------------------------------------------------------------- #
+- name: Disable SELinux
+  include_tasks: selinux.yml
+
+# ---------------------------------------------------------------------------- #
+# SETUP FIREWALL                                                               #
+# ---------------------------------------------------------------------------- #
+- name: Add network mount firewall rules
+  firewalld:
+    service: "{{ item }}"
+    permanent: true
+    state: enabled
+  with_items: '{{ cobbler_firewall_services }}'
+
+# ---------------------------------------------------------------------------- #
+# SETUP COBBLER SETTINGS                                                       #
+# ---------------------------------------------------------------------------- #
+- name: Configure Cobbler Settings
+  include_tasks: cobbler_config.yml
+
+# ---------------------------------------------------------------------------- #
+# SETUP SERVICES                                                               #
+# ---------------------------------------------------------------------------- #
+- name: enable cobbler services
+  service: "name={{ item }} state=started enabled=yes"
+  with_items: '{{ cobbler_services }}'
+
+- name: enable cobbler web services
+  service: "name={{ item }} state=started enabled=yes"
+  with_items: '{{ cobbler_web_services }}'
+
+# vim:ft=ansible:
